@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                        http://www.springframework.org/schema/task
+                        http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+    <!-- 单独文件的目的：不需要任务时可以不加载该文件 -->
+	<!--开启注解调度支持 @Async @Scheduled-->
+	<task:annotation-driven executor="executor" scheduler="scheduler" />
+	<!-- 任务调度器 -->
+	<task:scheduler id="scheduler" pool-size="10" />
+	<!-- 任务执行器 --> 
+	<task:executor id="executor" pool-size="5" />
+	<!-- <task:scheduled-tasks scheduler="scheduler">
+		<task:scheduled ref="testTask" method="run" cron="0 0/5 * * * ?" />
+	</task:scheduled-tasks>
+	<task:scheduler id="scheduler" pool-size="10" /> -->
+	
+	<!-- 注意：因为spring-service.xml已经配置了任务调度注解，顾不需要再配置该文件 -->
+</beans>
