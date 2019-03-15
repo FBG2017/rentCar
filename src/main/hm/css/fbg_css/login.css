@@ -1,0 +1,47 @@
+body {
+	background: url(../../images/01bg01.gif) repeat-x 50% top; margin: 0px; text-align: center;
+}
+
+.w {
+	width: 960px;
+	margin: 0 auto;
+}
+
+.main {
+	/*background-color: red;*/
+	height: 790px;
+	position: relative;
+}
+
+.tableDiv {
+	/*background-color: blue;*/
+	height: 300px;
+	width: 960px;
+	position: absolute;
+	top: 300px;
+}
+
+table{
+	width: 300px;
+	text-align: center;
+	margin-left: 350px;
+	margin-top: 50px;
+	border: 5px solid green;
+	border-collapse: collapse;
+}
+tr,td{
+	border: 1px solid green;
+	text-align: center;
+	padding: 0px;
+	margin: 0px;
+}
+
+/*td:first-child {
+	column-span: 2;
+}*/
+#zu {
+	color: red;
+}
+#login{
+	background-color: green;
+}

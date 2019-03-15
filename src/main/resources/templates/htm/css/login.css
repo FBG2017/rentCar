@@ -1,0 +1,13 @@
+body{
+	background: url(../images/01bg01.gif) repeat-x 50% top; margin: 0px; text-align: center
+}
+.main{
+	margin:390px auto;
+	font:italic normal 90;
+}
+.tableDiv {
+	width:300px;
+	margin:0px auto;
+}
+.head_title{
+}

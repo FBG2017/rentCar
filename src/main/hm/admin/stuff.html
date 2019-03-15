@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="stuff">
+<head>
+<meta charset="UTF-8">
+<title>物品管理</title>
+<script src="../js/angular.js"></script>
+<script src="../js/jquery-3.2.1.js"></script>
+<script src="../js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../js/js/stuffpage.js"></script>
+<style type="text/css">
+	body {
+        background-color: lightslategrey;
+    }
+
+      table{
+	width: 1000px;
+	margin-left: 200px;
+	margin-top: 50px;
+	border: 5px solid rgb(47,28,14);
+	border-collapse: collapse;
+}
+tr,td{
+	border: 1px solid rgb(47,28,14);
+	text-align: center;
+	padding: 0px;
+	margin: 0px;
+}
+#imageSpan {
+	width: 99px;
+	height: 80px;
+}
+    </style>
+<link rel="stylesheet" href="../js/jquery-ui.min.css">
+
+<script>
+	(function(window) {
+		window.angular.module('stuff', []).controller(
+				'stuffCtrl',
+				function($scope, $http) {
+					init($scope,$http);
+
+					//获取所有物品
+					$http.get('/stuff').then(function(response) {
+						$scope.stuffss = response.data.data;
+						console.debug($scope.stuffss);
+					}, function(err) {
+						alert(err.data);
+					});
+					//获取所有类别 & 生成类别map
+					$http.get('/categories').then(
+							function(response) {
+								$scope.categories = response.data.data;
+								console.debug($scope.categories);
+								$scope.categoryMap = new Map();
+								for ( var i in $scope.categories) {
+									$scope.categoryMap.set(
+											$scope.categories[i].categoryId,
+											$scope.categories[i].name);
+								}
+								console.debug($scope.categoryMap);
+							}, function(err) {
+								alert(err.data);
+							});
+
+					// $scope.doUpload =function(){
+					// 	var form = new FormData();
+				 //        var file = document.getElementById("img").files[0];   
+				 //   //      var stuff =JSON.stringify({
+				 //   //      	categoryId : $scope.categoryId,
+					// 		// name : $scope.name,
+					// 		// deposit : $scope.deposit,
+					// 		// rental : $scope.rental,
+					// 		// image  :$scope.image,
+					// 		// status : $scope.status});
+
+				 //        form.append('imageFile', file);
+				 //        // form.append('stuff',stuff);
+				 //        $http.post("/stuff/upload", form, 
+				 //        	      {'Content-Type': undefined},
+				 //                   angular.identity).then(function(res) {
+					// 		console.debug(res.data.data);
+					// 		$scope.stuff.push(res.data.data);
+					// 	}, function(err) {
+					// 		alert(err.data);
+					// 	});
+
+					// };
+
+					//弹出修改dialog
+                    $scope.getModify = function (id) {
+                        // modify_category = category;
+                        $("#dialog-form").dialog("open");
+                        // $("#fixName").val(category.name);
+                    };	
+
+					$scope.doModify=function(id){
+                     	// var data =JSON.stringify({
+                     	// 	id:id
+                     	// });
+                     	$http({
+                     		method:'GET',
+                     		url:'/stuff/'+id,
+                     		// data:data, 这个试用于post 和get
+                     	}).then(function(res) {
+                     		$scope.stuff = res.data.data;
+						    console.info(res);
+						}, function(err) {
+   							 console.info(err);
+						});
+
+                     }	
+
+					 $scope.doUpload = function(){
+			            var form = new FormData();
+			            var file = document.getElementById("img").files[0];
+			            form.append('imageFile', file);
+			            $http({
+			                method: 'POST',
+			                url: '/stuff/upload',
+			                data: form,
+			                headers: {'Content-Type': undefined},
+			                transformRequest: angular.identity
+			            }).then(function(res) {
+						    console.info(res);
+						}, function(err) {
+   							 console.info(err);
+						});
+                       }
+
+                     $scope.doDelete=function(id){
+                     	var data =JSON.stringify({
+                     		id:id
+                     	});
+                     	$http({
+                     		method:'DELETE',
+                     		url:'/stuff/'+id,
+                     		// data:data, 这个试用于post 和get
+                     	}).then(function(res) {
+						    console.info(res);
+						}, function(err) {
+   							 console.info(err);
+						});
+
+                     }
+               //         success(function (data) {
+			            //     console.log('upload success');
+			            // }).error(function (data) {
+			            //      console.log('upload fail');
+			            // })
+					//添加物品
+					$scope.doAdd = function() {
+						var imageFile = document.querySelector('input[type=file]').files[0];
+						var filename = "../upload/"+imageFile.name;
+						var data = JSON.stringify({
+							categoryId : $scope.categoryId,
+							name : $scope.name,
+							deposit : $scope.deposit,
+							rental : $scope.rental,
+							image  : filename,
+							status : $scope.status
+						});
+						console.debug(data);
+						$http.post("/stuff", data).then(function(res) {
+							console.debug(res.data.data);
+							$scope.stuff.push(res.data.data);
+						}, function(err) {
+							alert(err.data);
+						});
+					}
+
+				})
+	})(window);
+
+	jQuery(function($) {
+		//弹出添加框
+		function add() {
+			$("#btnAdd").click(function() {
+				$("#dialog-form").dialog("open");
+			});
+		}
+		$(document).ready(function() {
+							//初始化修改dialog
+							$("#dialog-form")
+									.dialog(
+											{
+												autoOpen : false,
+												height : 300,
+												width : 350,
+												modal : true,
+												buttons : {
+															"添加" : function() {
+																 angular.element(
+																 	document.querySelector('[ng-controller=stuffCtrl]'))
+																    .scope()
+																     .doAdd();
+														       $(this).dialog("close");
+													        },
+													          "取消" : function() {
+														      $(this).dialog("close");
+													     }
+												   }
+											});
+							     add();
+						});
+
+
+	});
+
+</script>
+
+</head>
+<body ng-controller="stuffCtrl">
+	<script type="text/javascript">
+    function changepic() {
+        var reads= new FileReader();
+        f=document.getElementById('img').files[0];
+        reads.readAsDataURL(f);
+        reads.onload=function (e) {
+            document.getElementById('show').src=this.result;
+        };
+    }
+	</script>
+	<div id="dialog-form" title="添加物品">
+		<form>
+			<fieldset>
+				<label> 类别名称 <select ng-model="categoryId"
+					ng-options="c.categoryId as c.name
+                        for
+                        c in categories">
+						<option value="">-- 请选择 --</option>
+				</select>
+				</label><br /> 
+				 <label for="name">物品名称</label><input id="name"ng-model="name" /><br /> 
+				 <label for="deposit">押金</label><input id="deposit" ng-model="deposit" /><br /> 
+				 <label for="rental">租金</label><input id="rental" ng-model="rental" /><br /> 
+				 <label for="image">照片</label><input id="img" name="imageFile" type="file" style="z-index: -11111;  width: 20px;  height: 10px;" accept="image/png, image/jpeg, image/gif, image/jpg" onchange="changepic(this)"/>
+				 <button ng-click="doUpload()">上传</button><br/>
+				 <img src="" id="show" width="200"><br/>
+				 <label> 状态 
+				 	<input type="radio" ng-model="status" value="0" checked>未租 
+				 	<input type="radio" ng-model="status" value="1" checked>申请租用 
+					<input type="radio" ng-model="status" value="2" checked>已租
+				</label>
+			</fieldset>
+		</form>
+	</div>
+	<div style="text-align: center;">
+		物品管理&nbsp;
+		<button id="btnAdd">添加</button>
+	</div>
+	<table width="98%" align="center" border="0" cellpadding="4" cellspacing="1" bgcolor="#CBD8AC" style="margin-bottom:8px">
+		<tr>
+			<th>类别名称</th>
+			<th>物品名称</th>
+			<th>押金</th>
+			<th>租金（rmb/day）</th>
+			<th>图片</th>
+			<th>状态</th>
+			<th>操作</th>
+		</tr>
+		<tr ng-repeat="s in stuff" align="center">
+			<td>{{categoryMap.get(s.categoryId)}}</td>
+			<td>{{s.name}}</td>
+			<td>{{s.deposit}}</td>
+			<td>{{s.rental}}</td>
+			<td id="imageSpan"><img  width="100px" height="85px" src="{{s.image}}" /></td>
+			<td>
+				<div ng-switch="s.status">
+					<div ng-switch-when="0">未租</div>
+					<div ng-switch-when="1">申请租用</div>
+					<div ng-switch-when="2">已租</div>
+				</div>
+			</td>
+			<td>
+				<button ng-click="getModify(s.stuffId)">修改</button>&nbsp;
+				<button ng-click="doDelete(s.stuffId)" >删除</button>
+			</td>
+		</tr>
+	</table>
+	<!--分页-->
+    <div class="page" style="position: absolute;left: 200px;">
+            &nbsp;&nbsp;&nbsp;<span class="nextPage" ng-click="nextPage()">下一页</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="prevPage" ng-click="lastPage()">上一页</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>{{cur}}/{{rowSize}}页     共 {{total}} 条记录</span>
+            <!-- <button ng-click="querypage()"></button> -->
+        </div>
+    <!--分页--> 
+</body>
+</html>

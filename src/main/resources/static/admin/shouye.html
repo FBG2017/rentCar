@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="shouye">
+<head>
+	<meta charset="utf-8"/>
+	<title>首页</title>
+	<script src="../js/angular.js"></script>
+	<script src="../js/jquery-3.2.1.js"></script>
+	<script src="../js/jquery-ui.min.js"></script>
+	<script type="text/javascript">
+		(function(window){
+			 window.angular.module('shouye', [])
+                .controller('shouyeCtrl', function ($scope, $http) {
+
+                	$http.get('/sysInfo').then(function (response) {
+                        // console.debug(response.data.data);
+                        $scope.info = response.data.data;
+                        $scope.sysVersion=response.data.data.sysVersion;
+                        $scope.path=response.data.data.path;
+                        $scope.totalMemory=response.data.data.totalMemory;
+                        $scope.sysType=response.data.data.sysType;
+                        $scope.javaVersion=response.data.data.javaVersion;
+                        $scope.javaPath=response.data.data.javaPath;
+                        $scope.freeMemory=response.data.data.freeMemory;
+
+                    }, function (err) {
+                        alert(err.data);
+                    });
+
+
+                	 
+                });
+			}) (window);
+
+	</script>
+</head>
+<body ng-controller="shouyeCtrl">
+	  <table width="98%" align="center" border="0" cellpadding="4" cellspacing="1" bgcolor="#CBD8AC" style="margin-bottom:8px">
+		  <tr bgcolor="#EEF4EA">
+		    <td colspan="2" background="<%=path %>/img/wbg.gif" class='title'><span>系统基本信息</span></td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">操作系统版本：</td>
+		    <td width="75%" bgcolor="#FFFFFF">{{sysVersion}}</td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">操作系统类型：</td>
+		    <td>{{sysType}}位<!-- x32,x86 --></td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">临时目录：</td>
+		    <td>{{path}}</td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">JDK版本：</td>
+		    <td>{{javaVersion}}</td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">JKD安装目录：</td>
+		    <td>{{javaPath}}</td>
+		  </tr>
+		  <tr bgcolor="#FFFFFF">
+		    <td width="25%" bgcolor="#FFFFFF" align="right">总内存/剩余内存：</td>
+		    <td>
+				<b>{{totalMemory}}</b>MB&nbsp;&nbsp;/&nbsp;&nbsp;<b>{{freeMemory}}</b>MB
+            </td>
+		  </tr>
+		</table>
+
+</body>
+</html>
