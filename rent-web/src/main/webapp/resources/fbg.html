@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html ng-app="login_app">
+<head>
+	<meta charset="utf-8">
+	<title>登录页</title>
+	<script src="js/angular.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/fbg_css/login.css" media="all">
+
+	<script type="text/javascript">
+		//ng-app="login_app"
+		//1.ng-controller="loginCtrl" 
+		//2.ng-model="username"  ng-model="password" 
+		//3.ng-click="login()"
+
+		(function(window){
+			window.angular.module('login_app',[]).controller('loginCtrl',
+				function($scope,$http){
+					$scope.user_login =function(){
+						var data =JSON.stringify({
+							username:$scope.username,
+							password:$scope.password,
+						});
+						$http.post("/sessions",data).then(
+							function(res){
+								var result =res.data;
+								if (result.success ===false) { $scope.msg =result.data;return;}
+								var user =result.data;
+								if (user.role===0) {window.location.href="web/index.html";}else if (user.role==1) {window.location.href="admin/index.html";}else { $scope.msg = "系统异常";}
+							},
+							function(err){
+								alert(err.data);
+							 }
+							);
+					}
+				});
+		})(window);
+
+	</script>
+	
+<!-- 	<script type="text/javascript">
+			(function(window) {
+		window.angular.module('login', []).controller('loginCtrl',
+				function($scope, $http) {
+					$scope.login = function() {
+						var data = JSON.stringify({
+							username : $scope.username,
+							password : $scope.password,
+						});
+						$http.post("/sessions", data) ///sessions路径，post请求
+						.then(function(res) {
+							var result = res.data;
+							if (result.success === false) {
+								$scope.msg = result.data;
+								return;
+							}
+							var user = result.data;
+							if (user.role === 0) {//获取响应 的用户角色，为0就是用户，1就是管理员
+								window.location.href = "web/index.html";
+							} else if (user.role === 1) {
+								window.location.href = "admin/index.html";
+							} else {
+								$scope.msg = "系统异常";
+							}
+						}, function(err) {
+							alert(err.data);
+						});
+					}
+				});
+	})(window);
+	</script>	 -->
+</head>
+<body ng-controller="loginCtrl">
+	<div class="w main">
+			<div class="tableDiv">
+				<table>
+					 <tr>
+					 	<td colspan="2">租赁平台</td>
+					 </tr>
+					 <tr>
+					 	<td colspan="2" id="zu">{{msg}}</td>
+					 </tr>
+					 <tr>
+						<td><label for="username">username:</label></td>
+						<td><input id="username" ng-model="username" /></td>					 		
+					 </tr>
+					 <tr>
+					 	<td><label for="password">password:</label></td>
+						<td><input type="password" id="password" ng-model="password" /></td>
+					 </tr>
+					 <tr>
+					 	<td colspan="2"><input id="login" type="button" value="login" ng-click="user_login()"></td>
+					 </tr>
+				</table>
+			</div>
+	</div>
+</body>
+</html>

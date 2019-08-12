@@ -12,9 +12,14 @@
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
 
+		<!-- 模糊查询 -->
+        <plugin type="priv.thinkam.rent.common.plugin.FuzzyQueryPlugin"></plugin>
+             <!-- 分页查询 -->
+        <plugin type="priv.thinkam.rent.common.plugin.MySQLLimitPlugin"></plugin>
+		
         <!-- 为生成的Java模型创建一个toString方法 -->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
-
+		
         <!-- 为生成的Java模型类添加序列化接口，并生成serialVersionUID字段 -->
         <plugin type="priv.thinkam.rent.common.plugin.SerializablePlugin">
             <property name="suppressJavaInterface" value="false"/>
@@ -22,7 +27,7 @@
 
         <!-- 生成在XML中的<cache>元素 -->
 ##        <plugin type="org.mybatis.generator.plugins.CachePlugin">
-##            <!-- 使用ehcache -->
+##            使用ehcache
 ##            <property name="cache_type" value="org.mybatis.caches.ehcache.LoggingEhcache" />
 ##        </plugin>
 

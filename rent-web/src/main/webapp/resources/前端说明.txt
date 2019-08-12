@@ -1,0 +1,16 @@
+Augular.Js
+Jquery.JS
+Boostrap
+
+RESTful  规范
+
+login.html 直接请求路径
+
+根据角色，来到 
+	admin/index.html
+	web/index.html
+
+ 然后 主页的子项，都href=“#one”   #two
+
+ 每个子页面 都要对应的调用
+ 接口的JS

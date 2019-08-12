@@ -9,7 +9,8 @@
           http://www.springframework.org/schema/tx/spring-tx.xsd
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context.xsd">
-
+		
+			
 	<!-- 作用：dao层 -->
 	
     <!-- 引入jdbc配置文件 -->
@@ -27,14 +28,25 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
-        <property name="mapperLocations" value="classpath*:priv/thinkam/rent/dao/mapper/*.xml"/>
+        <!-- <property name="mapperLocations" value="classpath*:priv/thinkam/rent/dao/mapper1/*.xml"/> -->
          <!-- classpath*:*priv/thinkam/rent/dao/xml/*Mapper.xml -->
     </bean>
+    <!-- 配置mapper 由于使用spring和mybatis的整合包进行mapper扫描，这里不需要配置了。
+     所以mapperLocations可以省略，要配也行，但是似乎不起作用
+     必须遵循：mapper.xml和mapper.java文件同名且在一个目录 -->
+    
     <!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="**.mapper"/>
+        <property name="basePackage" value="**.mapper,**.mapper.custom"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
+    
+    <!-- mapper扫描器 这个是参考配置-->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		扫描包路径，如果需要扫描多个包，中间使用半角逗号隔开
+		<property name="basePackage" value="com.gosun.isap.dao.mapper, com.gosun.isap.resource.api.box.dao.mapper" />
+	</bean> -->
 
     <!-- 事务管理器 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

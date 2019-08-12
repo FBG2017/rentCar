@@ -2,19 +2,23 @@ package priv.thinkam.rent.web.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import priv.thinkam.rent.common.base.Result;
 import priv.thinkam.rent.dao.model.Item;
 import priv.thinkam.rent.dao.model.ItemExample;
 import priv.thinkam.rent.dao.model.Stuff;
 import priv.thinkam.rent.dao.model.User;
+import priv.thinkam.rent.dao.model.wrap.PageQuery;
 import priv.thinkam.rent.service.ItemService;
 import priv.thinkam.rent.service.StuffService;
 
 import javax.servlet.http.HttpSession;
+
 import java.util.Date;
 import java.util.List;
 
@@ -121,4 +125,21 @@ public class ItemController {
 		}
 		return new Result(true);
 	}
+	
+	
+	//租用清单分页
+	@ApiOperation("租用清单")
+	@PostMapping("/itemspage")
+	public Result findItems(@RequestBody PageQuery page){
+		PageQuery pageQuery = new PageQuery();
+		pageQuery.setOffset(page.getOffset());//start
+		pageQuery.setLimit(page.getLimit());//每页多少条
+		List<Item> items = itemService.findItems(pageQuery);
+		List<Item> itemsAll = itemService.selectByExample(new ItemExample());
+		int row=itemsAll.size()/page.getLimit()+1;
+		return new Result(true,items,itemsAll.size(), row);
+	}
+	
+	
+	
 }

@@ -45,6 +45,13 @@ public class Stuff implements Serializable {
      */
     private Byte status;
 
+    /**
+     * 照片路径
+     *
+     * @mbg.generated
+     */
+    private String image;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getStuffId() {
@@ -95,6 +102,14 @@ public class Stuff implements Serializable {
         this.status = status;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -107,6 +122,7 @@ public class Stuff implements Serializable {
         sb.append(", deposit=").append(deposit);
         sb.append(", rental=").append(rental);
         sb.append(", status=").append(status);
+        sb.append(", image=").append(image);
         sb.append("]");
         return sb.toString();
     }
@@ -128,7 +144,8 @@ public class Stuff implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getDeposit() == null ? other.getDeposit() == null : this.getDeposit().equals(other.getDeposit()))
             && (this.getRental() == null ? other.getRental() == null : this.getRental().equals(other.getRental()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getImage() == null ? other.getImage() == null : this.getImage().equals(other.getImage()));
     }
 
     @Override
@@ -141,6 +158,7 @@ public class Stuff implements Serializable {
         result = prime * result + ((getDeposit() == null) ? 0 : getDeposit().hashCode());
         result = prime * result + ((getRental() == null) ? 0 : getRental().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getImage() == null) ? 0 : getImage().hashCode());
         return result;
     }
 }

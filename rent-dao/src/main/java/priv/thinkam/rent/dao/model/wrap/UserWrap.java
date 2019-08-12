@@ -1,17 +1,26 @@
 package priv.thinkam.rent.dao.model.wrap;
 
-public class UserWrap {
-    private Integer userId;
-    private String username;
-    private String password;
-    private Byte role;
-    private String tokens;
-    private String IP;
-    public String getIP() {
-		return IP;
+import java.io.Serializable;
+
+import priv.thinkam.rent.common.util.IpUtil;
+
+public class UserWrap implements Serializable{
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	 private Integer userId;
+	 private String userName;
+	 private String password;
+	 private byte role;
+	 private String IP;
+	 private String tokens;
+	 private boolean isRemember;
+	public boolean isRemember() {
+		return isRemember;
 	}
-    public void setIP(String iP) {
-		IP = iP;
+	public void setRemember(boolean isRemember) {
+		this.isRemember = isRemember;
 	}
 	public Integer getUserId() {
 		return userId;
@@ -19,11 +28,11 @@ public class UserWrap {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getPassword() {
 		return password;
@@ -31,11 +40,17 @@ public class UserWrap {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Byte getRole() {
+	public byte getRole() {
 		return role;
 	}
-	public void setRole(Byte role) {
+	public void setRole(byte role) {
 		this.role = role;
+	}
+	public String getIP() {
+		return IP;
+	}
+	public void setIP(String iP) {
+		IP = iP;
 	}
 	public String getTokens() {
 		return tokens;
@@ -43,5 +58,4 @@ public class UserWrap {
 	public void setTokens(String tokens) {
 		this.tokens = tokens;
 	}
-    
 }

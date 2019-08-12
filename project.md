@@ -84,3 +84,10 @@ java.lang.ClassNotFoundException: org.apache.commons.fileupload.FileItemFactory
 十二:
 spring-service.xml 已经配置了任务调度注解，
 故不需要再配置spring-task.xml，不然会报错
+
+十三:
+vm 文件是模板文件，volecity.引擎
+根据generatorConfig.vm 生成 generatorConfig.xml文件。
+mybatis根据genaratorConfig.xml,生成po,mapper,mapper.xml文件
+
+根据service.vm serviceImpl.vm生成业务层。

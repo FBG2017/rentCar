@@ -59,11 +59,13 @@ public class MybatisGeneratorUtil {
 		serviceImpl_vm = MybatisGeneratorUtil.class.getResource(serviceImpl_vm).getPath().replaceFirst("/", "");
 		System.out.println("serviceImpl.vm的路径:"+serviceImpl_vm);
 		String targetProject = PROJECT_NAME + "-dao";
+
 		System.out.println(MybatisGeneratorUtil.class.getResource("/").getPath());
 		String basePath = MybatisGeneratorUtil.class.getResource("/").getPath().replace("/target/classes/", "").replace(targetProject, "");
 		System.out.println("basePath=" + basePath);
 		String generatorconfigXml = MybatisGeneratorUtil.class.getResource("/").getPath().replace("/target/classes/", "") + "/src/main/resources/generatorConfig.xml";
 		System.out.println("逆向工程配置文件"+generatorconfigXml);
+
 		targetProject = basePath + targetProject;
 		System.out.println("targetproject=" + targetProject);
 		String sql = "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = '" + database + "';";
@@ -88,9 +90,9 @@ public class MybatisGeneratorUtil {
 
 			String targetProjectSqlMap = basePath + PROJECT_NAME + "-dao";
 			context.put("tables", tables);
-			context.put("generator_javaModelGenerator_targetPackage", packageName + ".dao.model");
-			context.put("generator_sqlMapGenerator_targetPackage", packageName + ".dao.mapper");
-			context.put("generator_javaClientGenerator_targetPackage", packageName + ".dao.mapper");
+			context.put("generator_javaModelGenerator_targetPackage", packageName + ".dao.model1");
+			context.put("generator_sqlMapGenerator_targetPackage", packageName + ".dao.mapper1");
+			context.put("generator_javaClientGenerator_targetPackage", packageName + ".dao.mapper1");
 			context.put("targetProject", targetProject);
 			context.put("targetProject_sqlMap", targetProjectSqlMap);
 			context.put("last_insert_id_tables", lastInsertIdTables);

@@ -6,103 +6,200 @@
     <script src="../js/angular.js"></script>
     <script src="../js/jquery-3.2.1.js"></script>
     <script src="../js/jquery-ui.min.js"></script>
+      <style type="text/css">
+    body {
+        background-color: lightslategrey;
+    }
+
+   table{
+    width: 1000px;
+    margin-left: 200px;
+    /*margin-top: 50px;*/
+    border: 5px solid rgb(47,28,14);
+    border-collapse: collapse;
+}
+tr,td{
+    border: 1px solid rgb(47,28,14);
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+button {
+    padding: 0px;
+    margin: 0px;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+}
+ 
+    .red{
+        background-color: red;
+        color: black;
+    }
+    .blue{
+        background-color: blue;
+        color: white;
+    }
+    </style>
     <link rel="stylesheet" href="../js/jquery-ui.min.css">
+  
     <script>
         var modify_category;
         (function (window) {
-            window.angular.module('category', [])
-                .controller('categoryCtrl', function ($scope, $http) {
-                    //展现categories
-                    $http.get('/categories').then(function (response) {
-                        $scope.categories = response.data.data;
-                    }, function (err) {
-                        alert(err.data);
-                    });
+            window.angular.module('category', []).controller('categoryCtrl',
+                     function ($scope, $http) {
 
+                                //查看类别 所有的
+                                $http.get('/categories').then(function (response) {
+                                    $scope.categories = response.data.data;
+                                }, function (err) {
+                                    alert(err.data);
+                                });
+                            
+                                 //提交添加请求
+                                $scope.addSubmit = function () {
+                                    var data = JSON.stringify({
+                                        name: $("#add input").val()//id为add的input下
+                                    });
+                                    $http.post("/categories", data)
+                                        .then(function (res) {
+                                            var result = res.data;
+                                            if (result.success) {
+                                                $scope.categories.push(result.data);
+                                                $scope.msg = "";
+                                            } else {
+                                                $scope.msg = res.data.data
+                                            }
+                                        }, function (err) {
+                                            alert(err.data);
+                                        });
+                                    $("#add button").show();//添加完毕后添加的按钮 显示
+                                    $("#add input").hide();//输入的按钮隐藏
+                                    $("#add input").val("");//清空输入的值
+                                };
                     
-                    
-                    
-                    
-                    //提交添加请求
-                    $scope.addSubmit = function () {
-                        var data = JSON.stringify({
-                            name: $("#add input").val()//id为add的input下
-                        });
-                        $http.post("/categories", data)
-                            .then(function (res) {
-                                var result = res.data;
-                                if (result.success) {
-                                    $scope.categories.push(result.data);
-                                    $scope.msg = "";
-                                } else {
-                                    $scope.msg = res.data.data
+
+                                     //提交删除请求
+                                $scope.doDel = function (category) {
+                                    var meg = "您确定要删除该类别吗？\n\n请确认！";
+                                     if (confirm(meg) == true){
+                                        // return true;
+                                         $http.delete("/categories/" + category.categoryId)
+                                        .then(function (res) {
+                                            if (res.data.success) {
+                                                $scope.categories.splice($scope.categories.indexOf(category), 1);
+                                            } else {
+                                                $scope.msg = res.data.data;
+                                            }
+                                        }, function (err) {
+                                            alert(err.data);
+                                        });
+
+                                    } else {
+                                        $scope.msg = "您取消了删除";
+                                        return false;
+                                    }
+                                };
+                                
+
+                                //弹出修改dialog
+                                $scope.doModify = function (category) {
+                                    modify_category = category;
+                                    $("#dialog-form").dialog("open");
+                                    $("#fixName").val(category.name);
+                                };
+
+                   
+                                //提交修改请求
+                                $scope.modifySubmit = function (id, name) {
+                                    var data = JSON.stringify({
+                                        name: name
+                                    });
+                                    $http.patch("/categories/" + id, data)
+                                        .then(function (res) {
+                                            if (res.data.success) {
+                                                $scope.categories.splice($scope.categories.indexOf(modify_category), 1,
+                                                    res.data.data);
+                                                $scope.msg = "";
+                                            } else {
+                                                $scope.msg = res.data.data;
+                                            }
+                                        }, function (err) {
+                                            alert(err.data);
+                                        });
+                                };
+
+                                //点击修改按钮，弹出 修改对话框
+                                $scope.doXiugai=function(category){
+                                    old_category=category;
+                                    $("#dialog-form").dialog("open");
+                                    $("#fixName").val(category.name);
+                                };
+                                //
+                                $scope.doXiugaiSubmit =function(id,name){
+                                    var data ={name:name};
+                                    $http.patch("/categories/"+id,data).
+                                        then(
+                                              function(res){
+                                                if (res.data.success) {
+                                                    $scope.categories.splice($scope.categories.indexOf(old_category),1,res.data.data);
+                                                    $scope.msg="";
+                                                }else{
+                                                    $scope.msg=res.data.data;
+                                                }
+                                              },
+                                              function(err){alert(err.data)}  
+                                            );
+                                };
+
+
+                                //点击添加按钮
+                                $scope.doAdd=function(){
+                                    $("#dialog-add-form").dialog("open");
+                                };
+
+                                //添加 提交
+                                $scope.doAddSubmit=function(name){
+                                    var data={name:name};//$("#newName").val()
+                                    $http.post("/categories",data).
+                                        then(
+                                                function (res) {
+                                                var result = res.data;
+                                                if (result.success) {
+                                                 $scope.categories.push(result.data);
+                                                 $scope.msg = "";
+                                                } else {
+                                                 $scope.msg = res.data.data;
+                                                 }
+                                             }, function (err) {
+                                                    alert(err.data);
+                                                }
+
+                                            );
                                 }
-                            }, function (err) {
-                                alert(err.data);
-                            });
-                        $("#add button").show();//添加完毕后添加的按钮 显示
-                        $("#add input").hide();//输入的按钮隐藏
-                        $("#add input").val("");//获取输入的值
-                    };
 
-                    
-                    //提交删除请求
-                    $scope.doDel = function (category) {
-                        $http.delete("/categories/" + category.categoryId)
-                            .then(function (res) {
-                                if (res.data.success) {
-                                    $scope.categories.splice($scope.categories.indexOf(category), 1);
-                                } else {
-                                    $scope.msg = res.data.data;
-                                }
-                            }, function (err) {
-                                alert(err.data);
-                            });
-                    };
 
-                    
-                    
-                    //弹出修改dialog
-                    $scope.doModify = function (category) {
-                        modify_category = category;
-                        $("#dialog-form").dialog("open");
-                        $("#fixName").val(category.name);
-                    };
 
-                    //提交修改请求
-                    $scope.modifySubmit = function (id, name) {
-                        var data = JSON.stringify({
-                            name: name
-                        });
-                        $http.patch("/categories/" + id, data)
-                            .then(function (res) {
-                                if (res.data.success) {
-                                    $scope.categories.splice($scope.categories.indexOf(modify_category), 1,
-                                        res.data.data);
-                                    $scope.msg = "";
-                                } else {
-                                    $scope.msg = res.data.data;
-                                }
-                            }, function (err) {
-                                alert(err.data);
-                            });
-                    };
 
                 });
         })(window);
 
+
+
+
         jQuery(function ($) {
             //弹出添加框
-            function add() {
-                $("#add button").click(function () {
-                    $("#add button").hide();//点击添加按钮 按钮隐藏
-                    $("#add input").show();
-                    $("#add input").focus();
-                });
-            }
+            // function add() {
+            //     $("#add button").click(function () {
+            //         $("#add button").hide();//点击添加按钮 按钮隐藏
+            //         $("#add input").show();
+            //         $("#add input").focus();
+            //     });
+            // }
 
             $(document).ready(function () {
-                $("#add input").hide();
+                // $("#add input").hide();
                 //初始化修改dialog
                 $("#dialog-form").dialog({
                     autoOpen: false,
@@ -110,38 +207,70 @@
                     width: 150,
                     modal: true,
                     buttons: {
-                        "modify": function () {
+                        "提交修改": function () {
                             angular.element(document.querySelector('[ng-controller=categoryCtrl]'))
                                 .scope()
-                                .modifySubmit(modify_category.categoryId, $("#fixName").val());
+                                .doXiugaiSubmit(old_category.categoryId, $("#fixName").val());
                             $(this).dialog("close");
                         }
                     }
                 });
-                add();
+
+              $("#dialog-add-form").dialog({
+                    autoOpen: false,
+                    height: 160,
+                    width: 150,
+                    modal: true,
+                    buttons: {
+                        "点我添加": function () {
+                            angular.element(document.querySelector('[ng-controller=categoryCtrl]'))
+                                .scope()
+                                .doAddSubmit($("#newName").val());
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+
+                // add();
             });
+
         });
+
+
     </script>
 </head>
 <body ng-controller="categoryCtrl">
 <div id="dialog-form">
     <input id="fixName" size="10">
 </div>
-<table align="center" border="5px">
+
+<div id="dialog-add-form">
+    <input id="newName" size="10">
+</div>
+<div style="width: 1000px;height: 50px;margin-left:200px;margin-top: 50px;">
+
+    <div style="text-align: center;border: 5px;margin-left: 600px;" id="add">
+             <button style="width: 70px;background-color: green;" ng-click="doAdd()">添加类别</button><br>
+            <!-- <input size="10" ng-model="name" ng-blur="addSubmit()"/> -->
+    </div> 
+</div>
+<table >
     <tr>
         <th>类别</th>
+        <th>操作</th>
     </tr>
     <tr ng-repeat="category in categories">
         <td>
-            <button ng-click="doDel(category)">删除</button>&nbsp;
             <span ng-dblclick="doModify(category)">{{category.name}}</span>
+        </td>
+        <td>
+            <button ng-click="doXiugai(category)" class="blue">修改</button>
+            <button ng-click="doDel(category)" class="red">删除</button>&nbsp;
         </td>
     </tr>
 </table>
-<div style="text-align: center;border: 5px;" id="add">
-    <button style="width: 70px">添加</button><br>
-    <input size="10" ng-model="name" ng-blur="addSubmit()"/>
-</div>
+
 <div style="text-align: center;color: red;">{{msg}}</div>
 </body>
 </html>

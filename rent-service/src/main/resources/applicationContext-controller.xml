@@ -23,7 +23,6 @@
     <aop:config proxy-target-class="true"/>
 
     <mvc:annotation-driven/>
-	
 	<!-- 配置静态资源，不被DispatcherServlet处理-->
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
     <mvc:resources mapping="/swagger-ui.html" location="classpath:/META-INF/resources/"/>

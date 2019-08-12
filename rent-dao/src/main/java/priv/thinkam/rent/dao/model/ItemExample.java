@@ -12,6 +12,10 @@ public class ItemExample implements Serializable {
 
     protected List<Criteria> oredCriteria;
 
+    private Integer limit;
+
+    private Integer offset;
+
     private static final long serialVersionUID = 1L;
 
     public ItemExample() {
@@ -65,6 +69,22 @@ public class ItemExample implements Serializable {
         oredCriteria.clear();
         orderByClause = null;
         distinct = false;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getOffset() {
+        return offset;
     }
 
     protected abstract static class GeneratedCriteria implements Serializable {
@@ -585,6 +605,34 @@ public class ItemExample implements Serializable {
 
         public Criteria andStatusNotBetween(Byte value1, Byte value2) {
             addCriterion("status not between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        protected String getStringColumns() {
+            return "";
+        }
+
+        protected boolean isStringColumnExist(String value) {
+            String [] columns = getStringColumns().split(",");
+            for (String s : columns) {
+                if (s.equals(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Criteria andGeneralLike(String field, String value) {
+            if (isStringColumnExist(field)) {
+                addCriterion(field + " like ", value, field);
+            }
+            return (Criteria) this;
+        }
+
+        public Criteria andGeneralNotLike(String field, String value) {
+            if (isStringColumnExist(field)) {
+                addCriterion(field + " not like ", value, field);
+            }
             return (Criteria) this;
         }
     }
